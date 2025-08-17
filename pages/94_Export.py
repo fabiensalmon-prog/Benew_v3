@@ -1,0 +1,41 @@
+
+import streamlit as st, io, datetime
+from data.utils import t, get_persona, guard
+
+st.sidebar.title("Benew")
+st.sidebar.page_link("app.py", label=t("menu_home"))
+st.sidebar.page_link("pages/00_Login.py", label=t("menu_login"))
+st.sidebar.page_link("pages/01_Persona.py", label=t("menu_persona"))
+st.sidebar.page_link("pages/10_Banking.py", label=t("menu_banking"))
+st.sidebar.page_link("pages/20_Insurance.py", label=t("menu_insurance"))
+st.sidebar.page_link("pages/30_Healthcare.py", label=t("menu_healthcare"))
+st.sidebar.page_link("pages/40_Taxation.py", label=t("menu_taxation"))
+st.sidebar.page_link("pages/50_Housing.py", label=t("menu_housing"))
+st.sidebar.page_link("pages/60_Transport.py", label=t("menu_transport"))
+st.sidebar.page_link("pages/70_Work.py", label=t("menu_work"))
+st.sidebar.page_link("pages/80_Life.py", label=t("menu_life"))
+st.sidebar.page_link("pages/90_Tools.py", label=t("menu_tools"))
+st.sidebar.page_link("pages/91_Glossary.py", label=t("menu_glossary"))
+st.sidebar.page_link("pages/92_Plan30.py", label=t("menu_plan"))
+st.sidebar.page_link("pages/93_Compare.py", label=t("menu_compare"))
+st.sidebar.page_link("pages/94_Export.py", label=t("menu_export"))
+
+guard()
+st.title(t("export_title"))
+p = get_persona()
+
+md = io.StringIO()
+md.write("# Mon plan Benew\n\n")
+md.write(f"- Profil: {p.get('profile')}\n")
+md.write(f"- Ville: {p.get('city')} — Durée: {p.get('duration')}\n")
+md.write(f"- Budget loyer: {p.get('budget')} €\n\n")
+md.write("## Recommandations clés\n")
+md.write("- Compte **individuel** + **Livret A/LDDS**\n")
+md.write("- Épargner ~10% du revenu net / mois (adapter selon reste à vivre)\n")
+md.write("- Coussin de sécurité = 3 mois de charges fixes\n")
+md.write("- Virements étrangers: Wise / Revolut ; Besoin d’agence: BNP / CA / SG\n")
+md.write("\n_Généré le: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M") + "_\n")
+content = md.getvalue()
+
+st.download_button("Télécharger mon plan (.md)", data=content.encode("utf-8"), file_name="mon_plan_benew.md", mime="text/markdown")
+st.success("Ton plan est prêt à être téléchargé.")
